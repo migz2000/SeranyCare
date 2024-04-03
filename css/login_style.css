@@ -1,0 +1,73 @@
+@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600&display=swap);
+
+
+body{
+    margin: 0;
+  
+    font-weight: 400;
+    line-height: 1.6;
+    color: #212529;
+    text-align: left;
+    background-color: #f5f8fa;
+}
+col-md-6 i{
+    margin-left: -30px;
+    cursor: pointer;
+}
+
+.my-form
+{
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.my-form .row
+{
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.login-form
+{
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+}
+
+.login-form .row
+{
+    margin-left: 0;
+    margin-right: 0;
+}
+input[type=submit]{
+    color: #ffffff;
+    border: none;
+    font-family: 'Poppins', sans-serif;
+    padding: 10px 12px;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    background-color: #000000;
+  }
+
+  .card-header {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px; /* Adjust the font size as needed */
+    font-weight: bold;
+}
+
+    /* Style the update button - btn1 (Green) */
+    .btn1 {
+        background-color: #000000; 
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+  
+    }
+
+    .btn1:hover {
+        background-color: #a10101;
+        color:#000000 /* Darker green on hover */
+    }
