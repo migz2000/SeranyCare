@@ -2,11 +2,13 @@
 include "header.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['news_id'], $_POST['title'], $_POST['detail'])) {
+    if (isset($_POST['news_id'], $_POST['title'], $_POST['detail'], $_POST['start_date'], $_POST['end_date'])) {
         // Sanitize input data
         $news_id = $_POST['news_id'];
         $title = htmlspecialchars($_POST['title']);
         $detail = htmlspecialchars_decode($_POST['detail']);
+        $start_date = $_POST['start_date'];
+        $end_date = $_POST['end_date'];
 
         // File upload handling
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
@@ -33,11 +35,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // Update news in the database
-        $stmt = $db->prepare("UPDATE news SET news_title=?, news_detail=?, file=? WHERE id=?");
-        $stmt->execute([$title, $detail, $file_path, $news_id]);
+        $stmt = $db->prepare("UPDATE news SET news_title=?, news_detail=?, file=?, start_date=?, end_date=? WHERE id=?");
+        $stmt->execute([$title, $detail, $file_path, $start_date, $end_date, $news_id]);
 
        // Redirect back to the edit page with success message
-       echo "<script>window.location.href = 'allnews.php?id=$news_id&success=1';</script>";
+       echo "<script>window.location.href = 'editnews.php?id=$news_id&success=1';</script>";
        exit;
    } else {
        // If required fields are not filled, redirect back to the edit page with error message

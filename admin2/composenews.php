@@ -53,6 +53,14 @@
                     <input type="text"name="news_title" class="form-control" id="exampleInputCity1" placeholder="Enter News Title" required>
                 </div>
                 <div class="form-group">
+                    <label for="start_date">Starting Date:</label>
+                    <input type="date" name="start_date" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="end_date">End Date:</label>
+                    <input type="date" name="end_date" class="form-control" required>
+                </div>
+                <div class="form-group">
                     <label for="exampleTextarea1">News Detail:</label>
                     <textarea class="form-control" name="news_detail" id="body" rows="5" placeholder="Enter News Detail" required></textarea>
                     <script>

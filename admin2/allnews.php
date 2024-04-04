@@ -1,6 +1,6 @@
 <?php include "header.php"; ?>
 <div class="row">
-    <div class="col-md-12 stretch-card">
+    <div class="col-md-12 stretch-card mb-3">
         <div class="card">
             <div class="card-body">
                 <p class="card-title">All News and Stories</p>
@@ -63,6 +63,8 @@
                                 <th>#</th>
                                 <th>Title</th>
                                 <th>Date Posted</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -79,6 +81,100 @@
                                     <th scope="row"><?= $i + 1 ?></th>
                                     <td><?= $row['news_title']; ?></td>
                                     <td><?= $row['date']; ?></td>
+                                    <td><?= $row['start_date']; ?></td>
+                                    <td><?= $row['end_date']; ?></td>
+                                    <td>
+                                        <a href="../news_post.php?id=<?= $row['id'] ?>" target="_blank" class="btn btn-primary btn-sm action-btn">View</a>
+                                        <a href="editnews.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm action-btn">Edit</a>
+                                        <a href="deletenews.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm ml-1 action-btn" onclick="return confirmDelete()">Delete</a>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 stretch-card mb-3">
+        <div class="card">
+            <div class="card-body">
+                <p class="card-title">Active News</p>
+                <div class="table-responsive">
+                    <table id="active-news-listing" class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Date Posted</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $tbl_name = "news";
+                            // Get active news with status 1
+                            $active_posts = ORM::for_table("$tbl_name")->where('status', 1)->order_by_desc('id')->find_array();
+
+                            foreach ($active_posts as $i => $row) {
+                            ?>
+                                <tr>
+                                    <th scope="row"><?= $i + 1 ?></th>
+                                    <td><?= $row['news_title']; ?></td>
+                                    <td><?= $row['date']; ?></td>
+                                    <td><?= $row['start_date']; ?></td>
+                                    <td><?= $row['end_date']; ?></td>
+                                    <td>
+                                        <a href="../news_post.php?id=<?= $row['id'] ?>" target="_blank" class="btn btn-primary btn-sm action-btn">View</a>
+                                        <a href="editnews.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm action-btn">Edit</a>
+                                        <a href="deletenews.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm ml-1 action-btn" onclick="return confirmDelete()">Delete</a>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 stretch-card mb-3">
+        <div class="card">
+            <div class="card-body">
+                <p class="card-title">Archive News</p>
+                <div class="table-responsive">
+                    <table id="archive-news-listing" class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Date Posted</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $tbl_name = "news";
+                            // Get archived news with status 2
+                            $archive_posts = ORM::for_table("$tbl_name")->where('status', 2)->order_by_desc('id')->find_array();
+
+                            foreach ($archive_posts as $i => $row) {
+                            ?>
+                                <tr>
+                                    <th scope="row"><?= $i + 1 ?></th>
+                                    <td><?= $row['news_title']; ?></td>
+                                    <td><?= $row['date']; ?></td>
+                                    <td><?= $row['start_date']; ?></td>
+                                    <td><?= $row['end_date']; ?></td>
                                     <td>
                                         <a href="../news_post.php?id=<?= $row['id'] ?>" target="_blank" class="btn btn-primary btn-sm action-btn">View</a>
                                         <a href="editnews.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm action-btn">Edit</a>
@@ -97,6 +193,8 @@
 <script>
     $(document).ready(function() {
         $('#recent-listing').DataTable();
+        $('#active-news-listing').DataTable();
+        $('#archive-news-listing').DataTable(); // Initialize DataTable for archive news
     });
 
     function confirmDelete() {

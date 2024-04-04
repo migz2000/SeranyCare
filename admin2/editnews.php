@@ -33,6 +33,41 @@ if (isset($_GET['id'])) {
                 </div>
             <?php endif; ?>
 
+            <style>
+            .custom-alert {
+                padding: 10px;
+                margin-bottom: 10px;
+                border-radius: 5px;
+                display: flex;
+                align-items: center;
+            }
+
+            .custom-alert-success {
+                background-color: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb;
+            }
+
+            .custom-alert-message {
+                margin-right: 10px;
+                margin-left: 15px;
+            }
+
+            .custom-alert-close {
+                background-color: #f8d7da;
+                border: 1px solid #f5c6cb;
+                color: #721c24;
+                padding: 3px 8px;
+                cursor: pointer;
+            }
+
+            .custom-alert-close:hover {
+                background-color: #f5c6cb;
+                border: 1px solid #f1b0b7;
+                color: #721c24;
+            }
+            </style>
+
             <!-- Your custom alert styles and JavaScript function -->
 
             <?php if (!empty($successMessage)): ?>
@@ -56,6 +91,16 @@ if (isset($_GET['id'])) {
                 </div>
 
                 <div class="form-group">
+                    <label for="start_date">Starting Date:</label>
+                    <input type="date" name="start_date" class="form-control" required value="<?= $news['start_date'] ?>">
+                </div>
+
+                <div class="form-group">
+                    <label for="end_date">End Date:</label>
+                    <input type="date" name="end_date" class="form-control" required value="<?= $news['end_date'] ?>">
+                </div>
+
+                <div class="form-group">
                     <label for="image">Upload Image:</label>
                     <input type="file" name="image" class="form-control" id="image" onchange="previewImage(this);" required>
                     <div class="mt-2">
@@ -73,6 +118,10 @@ if (isset($_GET['id'])) {
 </div>
 
 <script>
+    function closeCustomAlert(button) {
+        button.parentNode.style.display = "none";
+    }
+    
     function previewImage(input) {
         var preview = document.getElementById('image-preview');
         var file = input.files[0];
@@ -93,5 +142,3 @@ if (isset($_GET['id'])) {
         return confirm("Are you sure you want to update this news?");
     }
 </script>
-
-<?php include "footer.php"; ?>
