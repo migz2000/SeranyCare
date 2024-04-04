@@ -8,8 +8,16 @@ if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] != 1) {
     echo "<script>alert('You do not have permission to access this page.'); window.location='index.php';</script>";
     exit(); // Stop further execution
 }
-?>
 
+// Check if any alert message should be displayed and set session variable accordingly
+if (get("success")) {
+    $_SESSION['show_success_alert'] = true;
+} elseif (get("duplicate")) {
+    $_SESSION['show_duplicate_alert'] = true;
+} elseif (get("password_error")) {
+    $_SESSION['show_password_error_alert'] = true;
+}
+?>
 
 <!-- Add Bootstrap Icons stylesheet link -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
@@ -58,8 +66,10 @@ if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] != 1) {
                     <tbody>
                         <?php
                         // Fetch data from the table_admin with ordering by date
-                        $stmt = $db->query("SELECT id, CONCAT(first_name, ' ', last_name) AS name, username, email, contact_number, image, date, role FROM table_admin ORDER BY date DESC");
-                        $count = 1;
+                        $stmt = $db->prepare("SELECT id, CONCAT(first_name, ' ', last_name) AS name, username, email, contact_number, image, date, role FROM table_admin WHERE username != :username ORDER BY date DESC");
+                        $stmt->bindValue(':username', $_SESSION['SESS_USERNAME']); // Assuming 'admin_username' is the session variable storing the username of the current admin
+                        $stmt->execute();
+                        $count = 1; // Initialize $count here
 
                         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                             ?>
@@ -97,18 +107,28 @@ if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] != 1) {
         <div class="card-body">
             <h4 class="card-title mt-2">Register Admin</h4>
 
-            <?php if (get("success")) : ?>
+            <?php if (isset($_SESSION['show_success_alert']) && $_SESSION['show_success_alert']) : ?>
                 <div class="custom-alert custom-alert-success">
                     <button class="custom-alert-close" onclick="closeCustomAlert(this)">x</button>
                     <span class="custom-alert-message">Admin registered successfully!</span>
                 </div>
+                <?php unset($_SESSION['show_success_alert']); ?>
             <?php endif; ?>
 
-            <?php if (get("duplicate")) : ?>
+            <?php if (isset($_SESSION['show_duplicate_alert']) && $_SESSION['show_duplicate_alert']) : ?>
                 <div class="alert alert-danger">
-                <button class="custom-alert-close" onclick="closeCustomAlert(this)">x</button>
+                    <button class="custom-alert-close" onclick="closeCustomAlert(this)">x</button>
                     <span class="custom-alert-message">Email or username already exists. Please choose a different one.</span>
                 </div>
+                <?php unset($_SESSION['show_duplicate_alert']); ?>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['show_password_error_alert']) && $_SESSION['show_password_error_alert']) : ?>
+                <div class="alert alert-danger">
+                    <button class="custom-alert-close" onclick="closeCustomAlert(this)">x</button>
+                    <span class="custom-alert-message">Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and have a minimum length of 12 characters.</span>
+                </div>
+                <?php unset($_SESSION['show_password_error_alert']); ?>
             <?php endif; ?>
 
             <style>
@@ -197,7 +217,7 @@ if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] != 1) {
                         <img id="image-preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" alt="Image Preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='108' fill='currentColor' class='bi bi-person-circle' viewBox='0 0 16 16'%3E%3Cpath d='M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0'/%3E%3Cpath fill-rule='evenodd' d='M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1'/%3E%3C/svg%3E">
                     </div>
                 </div>
-                <input type="submit" class="btn btn-primary me-2" value="Register Admin">
+                <input type="submit" class="btn btn-primary me-2" value="Register Admin" onclick="return confirm('Are you sure you want to register this admin?');">
             </form>
         </div>
     </div>
