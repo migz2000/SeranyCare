@@ -32,7 +32,13 @@ include "header.php";
     <!-- Custom CSS -->
     <style>
         .action-btn {
-            width: 120px; /* Adjust the width as needed */
+            width: 100px; /* Adjust the width as needed */
+            height: 30px;
+        }
+        .table-sm th,
+        .table-sm thead th,
+        .table-sm tbody td {
+            font-size: 12px; /* Adjust the font size as needed */
         }
     </style>
 </head>
@@ -47,15 +53,7 @@ include "header.php";
                     <div class="col-8">
                         <h4 class="card-title mt-2">Manage Users</h4>
                     </div>
-                    <div class="col-4">                
-                        <div class="d-flex justify-content-end mb-2">
-                            <form method="post" action="pdf_userList.php" class="export-btn">
-                                <button type="submit" name="pdf_creater" id="pdf" class="btn btn-dark btn-sm">
-                                    Export <i class="fas fa-file-download" style="font-size: 1.2em;"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+                </div>
                 <!-- Add the table for users inside the card body -->
                 <div class="table-responsive">
                     <table id="usersTable" class="table table-sm">
@@ -112,10 +110,16 @@ include "header.php";
                                     <td style="color: <?php echo $statusColor; ?>"><?php echo $statusText; ?></td>
                                     <td>
                                         <?php if ($status == 0) : ?>
-                                            <button class="btn btn-success btn-sm ml-1 action-btn" onclick="confirmAction(<?php echo $user_row['id']; ?>, 'verify')">Verify</button>
-                                            <button class="btn btn-danger btn-sm ml-1 action-btn" onclick="confirmAction(<?php echo $user_row['id']; ?>, 'reject')">Reject</button>
+                                            <div class="mb-1">
+                                                <button class="btn btn-success btn-sm ml-1 action-btn" onclick="confirmAction(<?php echo $user_row['id']; ?>, 'verify')">Verify</button>
+                                            </div>
+                                            <div class="mb-1">
+                                                <button class="btn btn-danger btn-sm ml-1 action-btn" onclick="confirmAction(<?php echo $user_row['id']; ?>, 'reject')">Reject</button>
+                                            </div>
                                         <?php elseif ($status == 1) : ?>
-                                            <button class="btn btn-danger btn-sm ml-1 action-btn" onclick="confirmAction(<?php echo $user_row['id']; ?>, 'cancel')">Cancel</button>
+                                            <div class="mb-1">
+                                                <button class="btn btn-warning btn-sm ml-1 action-btn" onclick="confirmAction(<?php echo $user_row['id']; ?>, 'cancel')">Cancel</button>
+                                            </div>
                                         <?php endif; ?>
                                     </td>
                                 </tr>

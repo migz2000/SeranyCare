@@ -22,13 +22,18 @@ include "header.php";
     <style>
         .action-btn {
             width: 100px; /* Adjust the width as needed */
+            height: 30px;
+        }            
+        /* Custom styles for the table */
+        .table-sm th,
+        .table-sm thead th,
+        .table-sm tbody td {
+                font-size: 12px; /* Adjust the font size as needed */
         }
     </style>
 </head>
 
 <body>
-    <!-- Your navigation or any other header content goes here -->
-
     <div class="col-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
@@ -36,28 +41,19 @@ include "header.php";
                     <div class="col-8">
                         <h4 class="card-title mt-2">In-Kind Inventory</h4>
                     </div>
-                    <!-- Add the Export to Excel button -->
-                    <div class="col-4">                
-                        <div class="d-flex justify-content-end mb-2">
-                            <form method="post" action="pdf_inkindInventory.php" class="export-btn">
-                                <button type="submit" name="pdf_creater" id="pdf" class="btn btn-dark btn-sm">
-                                    Export <i class="fas fa-file-download" style="font-size: 1.2em;"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
+                </div>
                 <!-- Add the table for Inkind inside the card body -->
                 <div class="table-responsive">
-                    <table id="inkindTable" class="table">
+                <table id="inkindTable" class="table table-sm">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Contact Number</th>
+                                <th>Event Title</th>
                                 <th>Type</th>
-                                <th>Description</th>
+                                <th>Quantity</th>
                                 <th>Date of Donation</th>
                                 <th>Status</th>
                                 <th>Actions</th>
@@ -66,7 +62,7 @@ include "header.php";
                         <tbody>
                             <?php
 
-                            $inkind_result = $db->prepare("SELECT id, donor, email, phone_number, type, description, inkind_donate_date, inkind_status FROM inkind_inventory ORDER BY inkind_donate_date DESC");
+                            $inkind_result = $db->prepare("SELECT id, donor, email, phone_number, title, event_id, type, quantity, quantity_type, description, inkind_donate_date, inkind_status, distributed_date FROM inkind_inventory ORDER BY inkind_donate_date DESC");
                             $inkind_result->execute();
                             $i = 1;
                             while ($inkind_row = $inkind_result->fetch()) {
@@ -83,6 +79,10 @@ include "header.php";
                                         $statusText = 'Distributed';
                                         $statusColor = 'green';
                                         break;
+                                    case 2:
+                                        $statusText = 'Cancelled';
+                                        $statusColor = 'red';
+                                        break;
                                     default:
                                         $statusText = 'Unknown';
                                         $statusColor = 'black';
@@ -94,16 +94,26 @@ include "header.php";
                                     <td><?php echo $inkind_row['donor']; ?></td>
                                     <td><?php echo $inkind_row['email']; ?></td>
                                     <td><?php echo $inkind_row['phone_number']; ?></td>
+                                    <td><?php echo $inkind_row['title']; ?></td>
                                     <td><?php echo $inkind_row['type']; ?></td>
-                                    <td><?php echo $inkind_row['description']; ?></td>
+                                    <td><?php echo $inkind_row['quantity'] . ' ' . $inkind_row['quantity_type']; ?></td>
                                     <td><?php echo $inkind_row['inkind_donate_date']; ?></td>
                                     <td style="color: <?php echo $statusColor; ?>"><?php echo $statusText; ?></td>
                                     <td>
                                         <?php if ($status == 0) : ?>
-                                            <button class="btn btn-success btn-sm action-btn" onclick="confirmAction(<?php echo $inkind_row['id']; ?>, 'distributed')">Distribute</button>
-                                            <button class="btn btn-dark btn-sm ml-1 action-btn" onclick="confirmAction(<?php echo $inkind_row['id']; ?>, 'delete')">Delete</button>
+                                            <div class="mb-1">
+                                                <button class="btn btn-success btn-sm action-btn" onclick="confirmAction(<?php echo $inkind_row['id']; ?>, 'distribute')">Distribute</button>
+                                            </div>
+                                            <div class="mb-1">
+                                                <button class="btn btn-dark btn-sm ml-1 action-btn" onclick="confirmAction(<?php echo $inkind_row['id']; ?>, 'delete')">Delete</button>
+                                            </div>
                                         <?php elseif ($status == 1) : ?>
-                                            <button class="btn btn-dark btn-sm ml-1 action-btn" onclick="confirmAction(<?php echo $inkind_row['id']; ?>, 'delete')">Delete</button>
+                                            <div class="mb-1">
+                                                <button class="btn btn-warning btn-sm action-btn" onclick="confirmAction(<?php echo $inkind_row['id']; ?>, 'cancel')">Cancel</button>
+                                            </div>
+                                            <div class="mb-1">
+                                                <button class="btn btn-dark btn-sm ml-1 action-btn" onclick="confirmAction(<?php echo $inkind_row['id']; ?>, 'delete')">Delete</button>
+                                            </div>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -114,8 +124,134 @@ include "header.php";
                         </tbody>
                     </table>
                 </div>
-                <!-- End of inkind table -->
+            </div>
+        </div>
+    </div>
 
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+            <div class="row">
+    <div class="col-8">
+        <h4 class="card-title mt-2">Distributed Donations</h4>
+    </div>
+    <div class="col-4">                
+        <div class="d-flex justify-content-end mb-2">
+            <!-- Add Modal Trigger Button -->
+            <button type="button" class="btn btn-dark btn-sm" onclick="showTimeSpanModal()">
+                Export <i class="fas fa-calendar" style="font-size: 1.2em;"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal HTML -->
+<div class="modal fade" id="timeSpanModal" tabindex="-1" role="dialog" aria-labelledby="timeSpanModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="timeSpanModalLabel">Set Time Span</h5>
+            </div>
+            <div class="modal-body">
+                <form id="timeSpanForm">
+                    <div class="form-group">
+                        <label for="startDate">Start Date:</label>
+                        <input type="date" class="form-control" id="startDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">End Date:</label>
+                        <input type="date" class="form-control" id="endDate">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Close</button>
+                <button type="button" class="btn btn-primary" onclick="exportDistributedDonations()">Export</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to handle modal close button click event
+    function closeModal() {
+        $('#timeSpanModal').modal('hide');
+    }
+
+    // Function to handle export button click event and show modal
+    function showTimeSpanModal() {
+        $('#timeSpanModal').modal('show');
+    }
+
+    // Function to export distributed donations with inkind_status = 1 based on selected time span
+    function exportDistributedDonations() {
+        var startDate = $('#startDate').val();
+        var endDate = $('#endDate').val();
+
+        // Construct URL to pass time span parameters to pdf_inkindInventory.php
+        var url = 'pdf_inkindInventory.php?startDate=' + startDate + '&endDate=' + endDate + '&status=1';
+
+        // Redirect to the export URL
+        window.location.href = url;
+
+        // Close modal after exporting
+        closeModal();
+    }
+</script>
+
+                <!-- Add the table for Distributed Donations inside the card body -->
+                <div class="table-responsive">
+                    <table id="distributedTable" class="table table-sm">
+                        <!-- Table header -->
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Contact Number</th>
+                                <th>Event Title</th>
+                                <th>Type</th>
+                                <th>Quantity</th>
+                                <th>Date of Donation</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $distributed_result = $db->prepare("SELECT id, donor, email, phone_number, title, event_id, type, quantity, quantity_type, description, inkind_donate_date, inkind_status, distributed_date FROM inkind_inventory WHERE inkind_status = '1' ORDER BY inkind_donate_date DESC");
+                            $distributed_result->execute();
+                            $i = 1;
+                            while ($distributed_row = $distributed_result->fetch()) {
+                                $statusText = 'Distributed';
+                                $statusColor = 'green';
+                                ?>
+                                <tr>
+                                    <th scope="row"><?php echo $i; ?></th>
+                                    <td><?php echo $distributed_row['donor']; ?></td>
+                                    <td><?php echo $distributed_row['email']; ?></td>
+                                    <td><?php echo $distributed_row['phone_number']; ?></td>
+                                    <td><?php echo $distributed_row['title']; ?></td>
+                                    <td><?php echo $distributed_row['type']; ?></td>
+                                    <td><?php echo $distributed_row['quantity'] . ' ' . $distributed_row['quantity_type']; ?></td>
+                                    <td><?php echo $distributed_row['inkind_donate_date']; ?></td>
+                                    <td style="color: <?php echo $statusColor; ?>"><?php echo $statusText; ?></td>
+                                    <td>
+                                        <div class="mb-1">
+                                            <button class="btn btn-warning btn-sm action-btn" onclick="confirmAction(<?php echo $distributed_row['id']; ?>, 'cancel')">Cancel</button>
+                                        </div>
+                                        <div class="mb-1">
+                                            <button class="btn btn-dark btn-sm ml-1 action-btn" onclick="confirmAction(<?php echo $distributed_row['id']; ?>, 'delete')">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php
+                                $i++;
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -136,6 +272,7 @@ include "header.php";
     <script>
         $(document).ready(function() {
             $('#inkindTable').DataTable();
+            $('#distributedTable').DataTable();
         });
 
         function confirmAction(inkindId, action) {
@@ -153,9 +290,14 @@ include "header.php";
                     }
                 };
                 xhr.send("inkind_id=" + inkindId + "&action=" + action);
-            }
+            } else {
+            // If user cancels, enable the button again
+            button.disabled = false;
         }
+    }
     </script>
+
+
 </body>
 
 </html>

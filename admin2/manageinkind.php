@@ -27,17 +27,61 @@ include "header.php";
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
-
-    <!-- Custom CSS -->
     <style>
-        .action-btn {
-            width: 100px; /* Adjust the width as needed */
-        }
+                    /* Custom styles for the table */
+                    .table-sm th,
+                    .table-sm thead th,
+                    .table-sm tbody td {
+                            font-size: 12px; /* Adjust the font size as needed */
+                    }
+
+                    th {
+                        padding: 40px; /* Adjust this value to change the padding */
+                        text-align: left; /* Align text as needed */
+                    }
+
+                    .custom-alert {
+                        padding: 10px;
+                        margin-bottom: 10px;
+                        border-radius: 5px;
+                        display: flex;
+                        align-items: center;
+                    }
+
+                    .custom-alert-success {
+                        background-color: #d4edda;
+                        color: #155724;
+                        border: 1px solid #c3e6cb;
+                    }
+
+                    .custom-alert-message {
+                        margin-right: 10px;
+                        margin-left: 15px;
+                    }
+
+                    .custom-alert-close {
+                        background-color: #f8d7da;
+                        border: 1px solid #f5c6cb;
+                        color: #721c24;
+                        padding: 3px 8px;
+                        cursor: pointer;
+                    }
+
+                    .custom-alert-close:hover {
+                        background-color: #f5c6cb;
+                        border: 1px solid #f1b0b7;
+                        color: #721c24;
+                    }
     </style>
 </head>
 
 <body>
-    <!-- Your navigation or any other header content goes here -->
+<?php if (get("success")): ?>
+    <div class="custom-alert custom-alert-success">
+        <button class="custom-alert-close" onclick="closeCustomAlert(this)">x</button>
+        <span class="custom-alert-message">Success</span>
+    </div>
+<?php endif; ?>
 
     <div class="col-12 grid-margin stretch-card">
         <div class="card">
@@ -46,36 +90,27 @@ include "header.php";
                     <div class="col-8">
                         <h4 class="card-title mt-2">In-Kind Donations</h4>
                     </div>
-                    <!-- Add the Export to pdf button -->
                     <div class="col-4">                
                         <div class="d-flex justify-content-end mb-2">
-                            <form method="post" action="pdf_inkindDonations.php" class="export-btn">
-                                <button type="submit" name="pdf_creater" id="pdf" class="btn btn-dark btn-sm">
-                                    Export <i class="fas fa-file-download" style="font-size: 1.2em;"></i>
-                                </button>
-                            </form>
+                            <a href="manageInventory.php" class="btn btn-dark btn-sm">
+                                Inventory <i class="fas fa-archive" style="font-size: 1.2em;"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
 
-                <?php if (get("success")): ?>
-                    <div class="custom-alert custom-alert-success">
-                        <button class="custom-alert-close" onclick="closeCustomAlert(this)">x</button>
-                        <span class="custom-alert-message">Success</span>
-                    </div>
-                <?php endif; ?>
-
                 <!-- Add the table for Inkind inside the card body -->
                 <div class="table-responsive">
-                    <table id="inkindTable" class="table">
+                    <table id="inkindTable" class="table table-sm">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Contact Number</th>
+                                <th>Event Title</th>
                                 <th>Type</th>
-                                <th>Description</th>
+                                <th>Quantity</th>
                                 <th>Date of Donation</th>
                                 <th>Status</th>
                                 <th>Actions</th>
@@ -84,7 +119,7 @@ include "header.php";
                         <tbody>
                             <?php
 
-                            $inkind_result = $db->prepare("SELECT id, donor, email, phone_number, type, description, inkind_donate_date, inkind_status FROM inkind ORDER BY inkind_donate_date DESC");
+                            $inkind_result = $db->prepare("SELECT id, donor, email, phone_number, title, event_id, type, quantity, quantity_type, description, inkind_donate_date, inkind_status FROM inkind ORDER BY inkind_donate_date DESC");
                             $inkind_result->execute();
                             $i = 1;
                             while ($inkind_row = $inkind_result->fetch()) {
@@ -116,19 +151,30 @@ include "header.php";
                                     <td><?php echo $inkind_row['donor']; ?></td>
                                     <td><?php echo $inkind_row['email']; ?></td>
                                     <td><?php echo $inkind_row['phone_number']; ?></td>
+                                    <td><?php echo $inkind_row['title']; ?></td>
                                     <td><?php echo $inkind_row['type']; ?></td>
-                                    <td><?php echo $inkind_row['description']; ?></td>
+                                    <td><?php echo $inkind_row['quantity'] . ' ' . $inkind_row['quantity_type']; ?></td>
                                     <td><?php echo $inkind_row['inkind_donate_date']; ?></td>
                                     <td style="color: <?php echo $statusColor; ?>"><?php echo $statusText; ?></td>
                                     <td>
                                         <?php if ($status == 0) : ?>
-                                            <button class="btn btn-primary btn-sm action-btn" onclick="confirmAction(<?php echo $inkind_row['id']; ?>, 'received')">Receive</button>
-                                            <button class="btn btn-danger btn-sm ml-1 action-btn" onclick="confirmAction(<?php echo $inkind_row['id']; ?>, 'failed')">Fail</button>
+                                            <div class="mb-1">
+                                                <button class="btn btn-primary btn-sm action-btn" onclick="confirmAction(<?php echo $inkind_row['id']; ?>, 'received')">Receive</button>
+                                            </div>
+                                            <div class="mb-1">
+                                                <button class="btn btn-danger btn-sm action-btn" onclick="confirmAction(<?php echo $inkind_row['id']; ?>, 'failed')">Fail</button>
+                                            </div>
                                         <?php elseif ($status == 1) : ?>
-                                            <button class="btn btn-dark btn-sm ml-1 action-btn" onclick="confirmAction(<?php echo $inkind_row['id']; ?>, 'reject')">Delete</button>
+                                            <div class="mb-1">
+                                                <button class="btn btn-dark btn-sm action-btn" onclick="confirmAction(<?php echo $inkind_row['id']; ?>, 'reject')">Delete</button>
+                                            </div>
                                         <?php elseif ($status == 2) : ?>
-                                            <button class="btn btn-warning btn-sm ml-1 action-btn" onclick="confirmAction(<?php echo $inkind_row['id']; ?>, 'cancel')">Cancel</button>
-                                            <button class="btn btn-dark btn-sm ml-1 action-btn" onclick="confirmAction(<?php echo $inkind_row['id']; ?>, 'reject')">Delete</button>
+                                            <div class="mb-1">
+                                                <button class="btn btn-warning btn-sm action-btn" onclick="confirmAction(<?php echo $inkind_row['id']; ?>, 'cancel')">Cancel</button>
+                                            </div>
+                                            <div class="mb-1">
+                                                <button class="btn btn-dark btn-sm action-btn" onclick="confirmAction(<?php echo $inkind_row['id']; ?>, 'reject')">Delete</button>
+                                            </div>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -166,6 +212,9 @@ include "header.php";
                 }
             };
             xhr.send("inkind_id=" + inkindId + "&action=" + action);
+        } else {
+            // If user cancels, enable the button again
+            button.disabled = false;
         }
     }
     </script>

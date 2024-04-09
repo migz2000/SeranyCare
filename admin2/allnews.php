@@ -1,25 +1,23 @@
 <?php include "header.php"; ?>
+
+<?php if (get("success")): ?>
+    <div class="custom-alert custom-alert-success">
+        <button class="custom-alert-close" onclick="closeCustomAlert(this)">X</button>
+        <span class="custom-alert-message">Success</span>
+    </div>
+<?php endif; ?>
+
 <div class="row">
     <div class="col-md-12 stretch-card mb-3">
         <div class="card">
             <div class="card-body">
                 <p class="card-title">All News and Stories</p>
 
-                <?php if (get("success")): ?>
-                    <div class="custom-alert custom-alert-success">
-                        <button class="custom-alert-close" onclick="closeCustomAlert(this)">X</button>
-                        <span class="custom-alert-message"> Success</span>
-                    </div>
-                <?php endif; ?>
-
                 <style>
-                    .action-btn {
-                        width: 100px; /* Adjust the width as needed */
-                    }  
-
-                    th {
-                        padding: 40px; /* Adjust this value to change the padding */
-                        text-align: left; /* Align text as needed */
+                    .table-sm th,
+                    .table-sm thead th,
+                    .table-sm tbody td {
+                        font-size: 12px; /* Adjust the font size as needed */
                     }
 
                     .custom-alert {
@@ -84,9 +82,15 @@
                                     <td><?= $row['start_date']; ?></td>
                                     <td><?= $row['end_date']; ?></td>
                                     <td>
-                                        <a href="../news_post.php?id=<?= $row['id'] ?>" target="_blank" class="btn btn-primary btn-sm action-btn">View</a>
-                                        <a href="editnews.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm action-btn">Edit</a>
-                                        <a href="deletenews.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm ml-1 action-btn" onclick="return confirmDelete()">Delete</a>
+                                        <div class="mb-1">
+                                            <a href="../news_post.php?id=<?= $row['id'] ?>" target="_blank" class="btn btn-primary btn-sm action-btn">View</a>
+                                        </div>
+                                        <div class="mb-1">
+                                            <a href="editnews.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm action-btn">Edit</a>
+                                        </div>
+                                        <div class="mb-1">
+                                            <a href="deletenews.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm ml-1 action-btn" onclick="return confirmDelete()">Delete</a>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -130,9 +134,15 @@
                                     <td><?= $row['start_date']; ?></td>
                                     <td><?= $row['end_date']; ?></td>
                                     <td>
-                                        <a href="../news_post.php?id=<?= $row['id'] ?>" target="_blank" class="btn btn-primary btn-sm action-btn">View</a>
-                                        <a href="editnews.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm action-btn">Edit</a>
-                                        <a href="deletenews.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm ml-1 action-btn" onclick="return confirmDelete()">Delete</a>
+                                        <div class="mb-1">
+                                            <a href="../news_post.php?id=<?= $row['id'] ?>" target="_blank" class="btn btn-primary btn-sm action-btn">View</a>
+                                        </div>
+                                        <div class="mb-1">
+                                            <a href="editnews.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm action-btn">Edit</a>
+                                        </div>
+                                        <div class="mb-1">
+                                            <a href="deletenews.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm ml-1 action-btn" onclick="return confirmDelete()">Delete</a>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -176,9 +186,15 @@
                                     <td><?= $row['start_date']; ?></td>
                                     <td><?= $row['end_date']; ?></td>
                                     <td>
-                                        <a href="../news_post.php?id=<?= $row['id'] ?>" target="_blank" class="btn btn-primary btn-sm action-btn">View</a>
-                                        <a href="editnews.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm action-btn">Edit</a>
-                                        <a href="deletenews.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm ml-1 action-btn" onclick="return confirmDelete()">Delete</a>
+                                        <div class="mb-1">
+                                            <a href="../news_post.php?id=<?= $row['id'] ?>" target="_blank" class="btn btn-primary btn-sm action-btn">View</a>
+                                        </div>
+                                        <div class="mb-1">
+                                            <a href="editnews.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm action-btn">Edit</a>
+                                        </div>
+                                        <div class="mb-1">
+                                            <a href="deletenews.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm ml-1 action-btn" onclick="return confirmDelete()">Delete</a>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php } ?>

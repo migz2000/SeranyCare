@@ -33,7 +33,17 @@ if (get("success")) {
          <div class="card-body">
             <div class="row">
                 <div class="col-8">
-                    <h4 class="card-title mt-2">Admin List</h4>
+                    <h4 class="card-title mt-2">Admin Logs</h4>
+                </div>
+                <div class="col-4">                
+                    <div class="d-flex justify-content-end mb-2">
+                        <form method="post" action="" class="export-btn">
+                            <!-- Export Button -->
+                            <button type="submit" name="pdf_creater" id="pdf" class="btn btn-dark btn-sm">
+                                Export <i class="fas fa-file-download" style="font-size: 1.2em;"></i>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
 
@@ -100,134 +110,6 @@ if (get("success")) {
     </div>
 </div>
 
-<div class="col-12 grid-margin stretch-card">
-    <div class="card">
-        <div class="card-body">
-            <h4 class="card-title mt-2">Register Admin</h4>
-
-            <?php if (isset($_SESSION['show_success_alert']) && $_SESSION['show_success_alert']) : ?>
-                <div class="custom-alert custom-alert-success">
-                    <button class="custom-alert-close" onclick="closeCustomAlert(this)">x</button>
-                    <span class="custom-alert-message">Admin registered successfully!</span>
-                </div>
-                <?php unset($_SESSION['show_success_alert']); ?>
-            <?php endif; ?>
-
-            <?php if (isset($_SESSION['show_duplicate_alert']) && $_SESSION['show_duplicate_alert']) : ?>
-                <div class="alert alert-danger">
-                    <button class="custom-alert-close" onclick="closeCustomAlert(this)">x</button>
-                    <span class="custom-alert-message">Email or username already exists. Please choose a different one.</span>
-                </div>
-                <?php unset($_SESSION['show_duplicate_alert']); ?>
-            <?php endif; ?>
-
-            <?php if (isset($_SESSION['show_password_error_alert']) && $_SESSION['show_password_error_alert']) : ?>
-                <div class="alert alert-danger">
-                    <button class="custom-alert-close" onclick="closeCustomAlert(this)">x</button>
-                    <span class="custom-alert-message">Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and have a minimum length of 12 characters.</span>
-                </div>
-                <?php unset($_SESSION['show_password_error_alert']); ?>
-            <?php endif; ?>
-
-            <style>
-            .action-btn {
-                width: 100px; /* Adjust the width as needed */
-                height: 30px;
-            }
-            /* Custom styles for the table */
-            .table-sm th,
-            .table-sm thead th,
-            .table-sm tbody td {
-                font-size: 12px; /* Adjust the font size as needed */
-            }
-
-            .custom-alert {
-                padding: 10px;
-                margin-bottom: 10px;
-                border-radius: 5px;
-                display: flex;
-                align-items: center;
-            }
-
-            .custom-alert-success {
-                background-color: #d4edda;
-                color: #155724;
-                border: 1px solid #c3e6cb;
-            }
-
-            .custom-alert-message {
-                margin-right: 10px;
-                margin-left: 15px;
-            }
-
-            .custom-alert-close {
-                background-color: #f8d7da;
-                border: 1px solid #f5c6cb;
-                color: #721c24;
-                padding: 3px 8px;
-                cursor: pointer;
-            }
-
-            .custom-alert-close:hover {
-                background-color: #f5c6cb;
-                border: 1px solid #f1b0b7;
-                color: #721c24;
-            }
-            </style>
-
-            <form class="com-mail" action="save_admin.php" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
-                <div class="form-group">
-                    <label for="adminfirst">Admin First Name:</label>
-                    <input type="text" name="first_name" class="form-control" id="adminfirst" placeholder="Enter Admin First Name" required>
-                </div>
-                <div class="form-group">
-                    <label for="adminlast">Admin Last Name:</label>
-                    <input type="text" name="last_name" class="form-control" id="adminlast" placeholder="Enter Admin Last Name" required>
-                </div>
-                <div class="form-group">
-                    <label for="contact_number">Contact Number:</label>
-                    <input type="tel" name="contact_number" class="form-control" id="contact_number" placeholder="Enter Contact Number" pattern="[0-9]{11}" title="Please enter a valid 11-digit number" required>
-                    <small class="form-text text-muted">Please enter a valid 11-digit contact number.</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="adminemail">Email:</label>
-                    <input type="email" name="email" class="form-control" id="adminemail" placeholder="Enter Admin Email" required>
-                </div>
-                <div class="form-group">
-                    <label for="adminusername">Username:</label>
-                    <input type="text" name="username" class="form-control" id="adminusername" placeholder="Enter Admin Username" required>
-                </div>
-                <div class="form-group">
-                    <label for="adminpassword">Password:</label>
-                    <div class="input-group">
-                        <input type="password" name="password" class="form-control" id="adminpassword" placeholder="Enter Admin Password" minlength="12" required>
-                        <button type="button" class="btn btn-secondary" onclick="togglePassword('adminpassword')">
-                            <i class="bi bi-eye-slash"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="confirm_password">Confirm Password:</label>
-                    <div class="input-group">
-                        <input type="password" name="confirm_password" class="form-control" id="confirm_password" placeholder="Confirm Admin Password" minlength="12" required>
-                        <button type="button" class="btn btn-secondary" onclick="togglePassword('confirm_password')">
-                            <i class="bi bi-eye-slash"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="image">Upload Image:</label>
-                    <input type="file" name="image" class="form-control" id="image" onchange="previewImage(this);" required>
-                    <div class="mt-2">
-                        <img id="image-preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" alt="Image Preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='108' height='108' fill='currentColor' class='bi bi-person-circle' viewBox='0 0 16 16'%3E%3Cpath d='M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0'/%3E%3Cpath fill-rule='evenodd' d='M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1'/%3E%3C/svg%3E">
-                    </div>
-                </div>
-                <input type="submit" class="btn btn-primary me-2" value="Register Admin" onclick="return confirm('Are you sure you want to register this admin?');">
-            </form>
-        </div>
-    </div>
-</div>
 
 <script>
     $(document).ready(function() {

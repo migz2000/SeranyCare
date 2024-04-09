@@ -111,8 +111,8 @@ define ('PDF_AUTHOR', 'Serany Foundation Inc.,');
  * Header title.
  */
 //define ('PDF_HEADER_TITLE', 'TCPDF Example');
-define ('PDF_INKIND_DONATIONS', 'In-kind Donations');
-define ('PDF_INKIND_INVENTORY', 'In-kind Inventory');
+define ('PDF_MONETARY_DONATIONS', 'Monetary Donations');
+define ('PDF_INKIND_INVENTORY', 'In-kind Donations');
 define ('PDF_ADMIN_LIST', 'Admins List');
 define ('PDF_USER_LIST', 'Users List');
 define ('PDF_VOLUNTEER_LIST', 'Volunteers List');

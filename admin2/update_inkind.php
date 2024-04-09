@@ -20,18 +20,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 break;
             case 'received':
                 // Retrieve the in-kind donation data
-                $stmt = $db->prepare("SELECT donor, email, phone_number, type, description, inkind_donate_date FROM inkind WHERE id = :id");
+                $stmt = $db->prepare("SELECT donor, email, phone_number, event_id, title, type, quantity, quantity_type, description, inkind_donate_date FROM inkind WHERE id = :id");
                 $stmt->bindParam(':id', $inkindId);
                 $stmt->execute();
                 $inkindData = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 // Insert in-kind donation data into inkind_inventory table
-                $insertStmt = $db->prepare("INSERT INTO inkind_inventory (donor, email, phone_number, type, description, inkind_donate_date) 
-                                           VALUES (:donor, :email, :phone_number, :type, :description, :inkind_donate_date)");
+                $insertStmt = $db->prepare("INSERT INTO inkind_inventory (donor, email, phone_number, event_id, title, type, quantity, quantity_type, description, inkind_donate_date) 
+                                           VALUES (:donor, :email, :phone_number, :event_id, :title, :type, :quantity, :quantity_type, :description, :inkind_donate_date)");
                 $insertStmt->bindParam(':donor', $inkindData['donor']);
                 $insertStmt->bindParam(':email', $inkindData['email']);
                 $insertStmt->bindParam(':phone_number', $inkindData['phone_number']);
+                $insertStmt->bindParam(':event_id', $inkindData['event_id']);
+                $insertStmt->bindParam(':title', $inkindData['title']);
                 $insertStmt->bindParam(':type', $inkindData['type']);
+                $insertStmt->bindParam(':quantity', $inkindData['quantity']);
+                $insertStmt->bindParam(':quantity_type', $inkindData['quantity_type']);
                 $insertStmt->bindParam(':description', $inkindData['description']);
                 $insertStmt->bindParam(':inkind_donate_date', $inkindData['inkind_donate_date']);
                 $insertStmt->execute();

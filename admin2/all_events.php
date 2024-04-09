@@ -1,21 +1,25 @@
 <?php include "header.php"; ?>
 
+<?php if (get("success")): ?>
+    <div class="custom-alert custom-alert-success">
+        <button class="custom-alert-close" onclick="closeCustomAlert(this)">x</button>
+        <span class="custom-alert-message">Success</span>
+    </div>
+<?php endif; ?>
+
 <div class="row">
     <div class="col-md-12 stretch-card mb-4">
         <div class="card">
             <div class="card-body">
                 <p class="card-title">Upcoming Events</p>
-                <?php if (get("success")): ?>
-                    <div class="custom-alert custom-alert-success">
-                        <button class="custom-alert-close" onclick="closeCustomAlert(this)">X</button>
-                        <span class="custom-alert-message">Success</span>
-                    </div>
-                <?php endif; ?>
 
                 <style>
-                    .action-btn {
-                        width: 100px; /* Adjust the width as needed */
-                    }   
+                    /* Custom styles for the table */
+                    .table-sm th,
+                    .table-sm thead th,
+                    .table-sm tbody td {
+                            font-size: 12px; /* Adjust the font size as needed */
+                    }
 
                     th {
                         padding: 40px; /* Adjust this value to change the padding */
@@ -87,9 +91,15 @@
                                 <td><?= $time_12hr; ?></td> <!-- Display time in 12-hour format -->
                                 <td><?= $row['venue']; ?></td>
                                 <td>
-                                    <a href="../event-detail.php?id=<?= $row['id'] ?>" target="_blank" class="btn btn-primary action-btn">View</a>
-                                    <a href="edit-event.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm action-btn">Edit</a>
-                                    <a href="deleteevent.php?id=<?= $row['id'] ?>" class="btn btn-danger action-btn" onclick="return confirmDelete()">Delete</a>
+                                    <div class="mb-1">
+                                        <a href="../event-detail.php?id=<?= $row['id'] ?>" target="_blank" class="btn btn-primary btn-sm action-btn">View</a>
+                                    </div>
+                                    <div class="mb-1">
+                                        <a href="edit-event.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm action-btn">Edit</a>
+                                    </div>
+                                    <div class="mb-1">
+                                        <a href="deleteevent.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm action-btn" onclick="return confirmDelete()">Delete</a>
+                                    </div>
                                 </td>
                             </tr>
                             <?php
@@ -137,9 +147,15 @@
                                 <td><?= $time_12hr; ?></td> <!-- Display time in 12-hour format -->
                                 <td><?= $row['venue']; ?></td>
                                 <td>
-                                    <a href="../event-detail.php?id=<?= $row['id'] ?>" target="_blank" class="btn btn-primary action-btn">View</a>
-                                    <a href="edit-event.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm action-btn">Edit</a>
-                                    <a href="deleteevent.php?id=<?= $row['id'] ?>" class="btn btn-danger action-btn" onclick="return confirmDelete()">Delete</a>
+                                    <div class="mb-1">
+                                        <a href="../event-detail.php?id=<?= $row['id'] ?>" target="_blank" class="btn btn-primary btn-sm action-btn">View</a>
+                                    </div>
+                                    <div class="mb-1">
+                                        <a href="edit-event.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm action-btn">Edit</a>
+                                    </div>
+                                    <div class="mb-1">
+                                        <a href="deleteevent.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm action-btn" onclick="return confirmDelete()">Delete</a>
+                                    </div>
                                 </td>
                             </tr>
                             <?php

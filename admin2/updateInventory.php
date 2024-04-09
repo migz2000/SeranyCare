@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Update status based on the action
         switch ($action) {
-            case 'distributed':
+            case 'distribute':
                 $status = 1;
                 // Send notification email
                 sendNotificationEmail($inkindId);

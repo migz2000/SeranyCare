@@ -129,7 +129,7 @@ $userImage = $row['image']; // Store the image filename in a variable
             <div class="collapse" id="ui-basic3">
               <ul class="nav flex-column sub-menu">
              
-                <li class="nav-item"> <a class="nav-link" href="">Monetary Donations</a></li>
+                <li class="nav-item"> <a class="nav-link" href="manageMonetary.php">Monetary Donations</a></li>
                 <li class="nav-item"> <a class="nav-link" href="manageinkind.php">In-kind Donations</a></li>
                 <li class="nav-item"> <a class="nav-link" href="manageInventory.php">In-kind Inventory</a></li>
               </ul>
@@ -137,10 +137,17 @@ $userImage = $row['image']; // Store the image filename in a variable
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="manage_admin.php">
+            <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic4" aria-expanded="false" aria-controls="ui-basic4">
             <i class="mdi mdi-account-circle menu-icon"></i>
               <span class="menu-title">Manage Admins</span>
+              <i class="menu-arrow"></i>
             </a>
+            <div class="collapse" id="ui-basic4">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="manage_admin.php">Admin List</a></li>
+                <li class="nav-item"> <a class="nav-link" href="admin_logs.php">Admin Logs</a></li>
+              </ul>
+            </div>
           </li>
 
           <li class="nav-item">

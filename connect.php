@@ -33,8 +33,10 @@ class App {
         }
     }
 }
-function get($val){
-    return @$_GET[$val];
+// Check if the function is not already defined
+if (!function_exists('get')) {
+    function get($val){
+        return @$_GET[$val];
+    }
 }
-    
 

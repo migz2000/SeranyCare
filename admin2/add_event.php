@@ -1,16 +1,16 @@
 <?php include "header.php"; ?>
 
+<?php if (get("success")): ?>
+  <div class="custom-alert custom-alert-success">
+    <button class="custom-alert-close" onclick="closeCustomAlert(this)">x</button>
+    <span class="custom-alert-message"> Event saved successfully!</span>
+  </div>
+<?php endif; ?>
+
 <div class="col-12 grid-margin stretch-card">
   <div class="card">
     <div class="card-body">
-      <h4 class="card-title">Add Events</h4> 
-
-      <?php if (get("success")): ?>
-        <div class="custom-alert custom-alert-success">
-          <button class="custom-alert-close" onclick="closeCustomAlert(this)">x</button>
-          <span class="custom-alert-message"> Event saved successfully!</span>
-        </div>
-      <?php endif; ?>
+      <h4 class="card-title">Add Events</h4>
 
       <style>
           .custom-alert {
