@@ -1,80 +1,86 @@
 <?php
-
-include '../connect.php';
 session_start();
-
-function clean($str)
-{
-    global $conn;
-    $str = trim($str);
-    return mysqli_real_escape_string($conn, $str);
+// Check if the user is logged in
+if (!isset($_SESSION['SESS_USERNAME'])) {
+    // Redirect to the login page if not logged in
+    header("location: login.php");
+    exit();
 }
 
-// Sanitize the POST values
-$login = clean($_POST['username']);
-$password = clean($_POST['password']);
-
-// Input Validations
-if ($login == '') {
-    $errmsg_arr[] = 'Username missing';
-    $errflag = true;
-}
-if ($password == '') {
-    $errmsg_arr[] = 'Password missing';
-    $errflag = true;
+// Check if the admin is logged in and has the required role
+if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] != 1) {
+    // Alert message if the user is not an admin with role 1
+    echo "<script>alert('You do not have permission to access this page.'); window.location='index.php';</script>";
+    exit(); // Stop further execution
 }
 
-// If there are input validations, redirect back to the login form
+// Include "header.php" and database connection file
+include "header.php";
+include "connect.php"; // Make sure you have this file for DB connection
 
-// Create query
-$qry = "SELECT * FROM table_admin WHERE username='$login'";
-$result = mysqli_query($conn, $qry);
-
-// Check whether the query was successful or not
-if ($result) {
-    if (mysqli_num_rows($result) > 0) {
-        // Username exists, fetch user data
-        $member = mysqli_fetch_assoc($result);
-
-        // Verify password
-        if (password_verify($password, $member['password'])) {
-            // Password is correct, proceed with login
-            session_regenerate_id();
-
-            // Set user details to session variables
-            $_SESSION['SESS_MEMBER_ID'] = $member['id'];
-            $_SESSION['SESS_USERNAME'] = $member['username'];
-            $_SESSION['SESS_FIRST_NAME'] = $member['first_name'];
-            $_SESSION['SESS_LAST_NAME'] = $member['last_name'];
-            $_SESSION['SESS_PRO_PIC'] = $member['image'];
-
-            // Retrieve admin role and set the session variable
-            $_SESSION['admin_role'] = $member['role'];
-
-            session_write_close();
-            
-            // Show alert with welcome message
-            echo '<script language = "javascript">';
-            echo "alert('Welcome, ".$member['username']."!');";
-            echo "window.location.href='index.php';";
-            echo '</script>';
-            exit();
-        } else {
-            // Password is incorrect
-            echo '<script language = "javascript">';
-            echo "alert('Username / Password is incorrect!');window.location.href='sign-in.php'";
-            echo '</script>';
-            exit;
-        }
-    } else {
-        // Username doesn't exist
-        echo '<script language = "javascript">';
-        echo "alert('Username / Password is incorrect!');window.location.href='sign-in.php'";
-        echo '</script>';
-        exit;
-    }
-} else {
-    // Query failed
-    die("Query failed");
-}
 ?>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+<script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+         <div class="card-body">
+            <div class="row">
+                <div class="col-8">
+                    <h4 class="card-title mt-2">Admin Logs</h4>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table id="logsTable" class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Admin ID</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Page</th>
+                            <th>Action</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        // Fetch logs from the database
+                        $sql = "SELECT admin_id, admin_username, admin_role, action_made, page, timestamp FROM logs ORDER BY timestamp DESC";
+                        $result = $conn->query($sql);
+
+                        if ($result->num_rows > 0) {
+                            // output data of each row
+                            while($row = $result->fetch_assoc()) {
+                                echo "<tr>
+                                        <td></td>
+                                        <td>" . $row["admin_id"]. "</td>
+                                        <td>" . $row["admin_username"]. "</td>
+                                        <td>" . $row["admin_role"]. "</td>
+                                        <td>" . $row["page"]. "</td>
+                                        <td>" . $row["action_made"]. "</td>
+                                        <td>" . $row["timestamp"]. "</td>
+                                      </tr>";
+                            }
+                        } else {
+                            echo "<tr><td colspan='7'>No logs found</td></tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#logsTable').DataTable();
+    });
+</script>

@@ -1,4 +1,9 @@
-<?php 
+<?php
+session_start();
+if(!isset($_SESSION['SESS_USERNAME'])){
+    header("location: sign-in.php");
+}
+
 require "Mail/phpmailer/PHPMailerAutoload.php";
 include "header.php"; 
 

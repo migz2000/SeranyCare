@@ -1,7 +1,10 @@
 <?php
-require 'vendor/autoload.php';
-include "header.php";
+session_start();
+if(!isset($_SESSION['SESS_USERNAME'])){
+    header("location: sign-in.php");
+}
 
+include "header.php";
 // Existing code...
 
 // Prepare and execute the query to fetch data$volunteers_result = $db->query("SELECT id, email, first_name, last_name, address, contact_number, event, event_date, event_venue, volunteer_status FROM volunteers ORDER BY id DESC");
@@ -380,8 +383,11 @@ $volunteers_result->execute();
                     }
                 };
                 xhr.send("volunteer_id=" + volunteerId + "&action=" + action);
-            }
+            } else {
+            // If user cancels, enable the button again
+            button.disabled = false;
         }
+    }
     </script>
 </body>
 

@@ -1,4 +1,11 @@
-<?php include "header.php"; ?>
+<?php
+session_start();
+if(!isset($_SESSION['SESS_USERNAME'])){
+    header("location: sign-in.php");
+}
+
+include "header.php";
+?>
 
 <?php if (get("success")): ?>
     <div class="custom-alert custom-alert-success">

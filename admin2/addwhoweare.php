@@ -1,4 +1,11 @@
-<?php include "header.php"; ?>
+<?php
+session_start();
+if(!isset($_SESSION['SESS_USERNAME'])){
+    header("location: sign-in.php");
+}
+
+include "header.php";
+?>
 
 <div class="col-12 grid-margin stretch-card">
     <div class="card">

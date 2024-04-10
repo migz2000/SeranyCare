@@ -1,6 +1,11 @@
 <?php
-// Include "header.php" and any necessary files for session handling
-include "header.php";
+session_start();
+// Check if the user is logged in
+if (!isset($_SESSION['SESS_USERNAME'])) {
+    // Redirect to the login page if not logged in
+    header("location: login.php");
+    exit();
+}
 
 // Check if the admin is logged in and has the required role
 if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] != 1) {
@@ -8,6 +13,9 @@ if (!isset($_SESSION['admin_role']) || $_SESSION['admin_role'] != 1) {
     echo "<script>alert('You do not have permission to access this page.'); window.location='index.php';</script>";
     exit(); // Stop further execution
 }
+
+// Include "header.php" and any necessary files for session handling
+include "header.php";
 
 // Check if any alert message should be displayed and set session variable accordingly
 if (get("success")) {

@@ -1,9 +1,11 @@
 <?php
-require 'vendor/autoload.php';
+session_start();
+if(!isset($_SESSION['SESS_USERNAME'])){
+    header("location: sign-in.php");
+}
+
 include "header.php";
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">

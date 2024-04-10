@@ -1,11 +1,9 @@
 <?php
-// Start the session
-session_start();
-
 include "../connect.php";
 
-// Check if SESS_USERNAME is set to avoid errors
+// Check if SESS_USERNAME and admin_role are set to avoid errors
 $loggedInUser = isset($_SESSION['SESS_USERNAME']) ? $_SESSION['SESS_USERNAME'] : '';
+$adminRole = isset($_SESSION['admin_role']) ? $_SESSION['admin_role'] : '';
 
 // Query to fetch the image filename associated with the logged-in user
 $sql = "SELECT image FROM table_admin WHERE username = :username";
@@ -15,6 +13,7 @@ $stmt->execute();
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 $userImage = $row['image']; // Store the image filename in a variable
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
